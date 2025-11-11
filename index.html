@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>장예경 | Portfolio</title>
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- 1. Three.js 먼저 로드 (가장 위에) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+
+    <!-- 2. lil-gui는 완전히 삭제 -->
+
+    <script>
+        // 3. THREE가 로드되었는지 확인 후 실행
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof THREE === "undefined") {
+                console.error("Three.js 로드 실패!");
+                return;
+            }
+
+            // 여기서부터 기존 window.onload 코드 복사
+            // (window.onload 대신 DOMContentLoaded 안에서 실행)
+
+            //top버튼
+            const scrollBtn = document.getElementById("scrollTopBtn");
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 300) {
+                    scrollBtn.classList.add("show");
+                } else {
+                    scrollBtn.classList.remove("show");
+                }
+            });
+            scrollBtn.addEventListener("click", () => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            });
+
+            //배경
+            const MOUSE_MOVEMENT_SCALE = 0.02;
+            const SCROLL_MOVEMENT_SCALE = 0.02;
+
+            const bgElement = document.getElementById('background');
+            if (!bgElement) return;
+
+            let canvasWidth = bgElement.clientWidth;
+            let canvasHeight = bgElement.clientHeight;
+            let aspect = canvasWidth / canvasHeight;
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.OrthographicCamera(-aspect, aspect, 1, -1, 0, 10);
+            camera.position.z = 1;
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(canvasWidth, canvasHeight);
+            bgElement.appendChild(renderer.domElement);
+
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+            const params = {
+                backgroundColor1: '#fff',
+                backgroundColor2: '#d9d9d9',
+                gradientAngle: 30,
+                shapeType: 'triangle',
+                shapeColor: '#99090A',
+                shapeSizeMin: 1.5,
+                shapeSizeMax: 8,
+                shapeCount: !isTouchDevice ? 100 : 50,
+                shapeGlobalOpacity: 1.0,
+                shapeRotationSpeed: 0.3,
+                mouseInfluence: 40,
+                mouseEaseFactor: 0.02,
+                scrollSpeedFactor: !isTouchDevice ? 1.6 : 8,
+                scrollMoveFactor: !isTouchDevice ? 0.02 : 0.005,
+                scrollDamping: !isTouchDevice ? 0.95 : 0.92,
+            };
+
+            // 배경 그라데이션
+            let gradientMaterial;
+            const bgPlane = new THREE.Mesh(
+                new THREE.PlaneGeometry(2, 2),
+                new THREE.ShaderMaterial({
+                    uniforms: {
+                        uColor1: { value: new THREE.Color(params.backgroundColor1) },
+                        uColor2: { value: new THREE.Color(params.backgroundColor2) },
+                        uAngle: { value: params.gradientAngle * Math.PI / 180 },
+                        uResolution: { value: new THREE.Vector2(canvasWidth, canvasHeight) },
+                    },
+                    vertexShader: `
+              varying vec2 vUv;
+              void main() {
+                vUv = uv;
+                gl_Position = vec4(position, 1.0);
+              }
+            `,
+                    fragmentShader: `
+              uniform vec3 uColor1;
+              uniform vec3 uColor2;
+              uniform float uAngle;
+              uniform vec2 uResolution;
+              varying vec2 vUv;
+              void main() {
+                vec2 centered = vUv - 0.5;
+                vec2 rotated = vec2(
+                  cos(uAngle) * centered.x - sin(uAngle) * centered.y,
+                  sin(uAngle) * centered.x + cos(uAngle) * centered.y
+                ) + 0.5;
+                vec3 color = mix(uColor1, uColor2, rotated.y);
+                gl_FragColor = vec4(color, 1.0);
+              }
+            `,
+                    depthWrite: false,
+                    depthTest: false,
+                    side: THREE.DoubleSide,
+                })
+            );
+            gradientMaterial = bgPlane.material;
+            scene.add(bgPlane);
+
+            const mouse = new THREE.Vector2();
+            const mouseOffset = new THREE.Vector2();
+            const easedMouseOffset = new THREE.Vector2();
+            let scrollVelocity = 0;
+            let scrollYOffset = 0;
+            let lastScroll = window.scrollY;
+
+            const settings = {
+                mouseEaseFactor: params.mouseEaseFactor,
+                mouseInfluence: params.mouseInfluence,
+                scrollSpeedFactor: params.scrollSpeedFactor,
+                scrollMoveFactor: params.scrollMoveFactor,
+                scrollDamping: params.scrollDamping,
+                shapeGlobalOpacity: params.shapeGlobalOpacity,
+            };
+
+            const pixelToWorld = px => (px / canvasHeight) * 2;
+            const getRandomRotationSpeed = factor => {
+                let s = 0;
+                do {
+                    s = (Math.random() * 0.1 - 0.05) * factor;
+                } while (Math.abs(s) < 0.01);
+                return s;
+            };
+            const randomUnitVector3 = () => {
+                let x = Math.random() * 2 - 1;
+                let y = Math.random() * 2 - 1;
+                let z = Math.random() * 2 - 1;
+                const len = Math.hypot(x, y, z);
+                return len === 0 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(x / len, y / len, z / len);
+            };
+            const createTriangle = () => {
+                const shape = new THREE.Shape();
+                const h = Math.sqrt(3);
+                shape.moveTo(-1, -h / 3);
+                shape.lineTo(1, -h / 3);
+                shape.lineTo(0, 2 * h / 3);
+                shape.lineTo(-1, -h / 3);
+                const geom = new THREE.ShapeGeometry(shape);
+                geom.center();
+                return geom;
+            };
+            const createSquare = () => {
+                const shape = new THREE.Shape();
+                shape.moveTo(-1, -1);
+                shape.lineTo(1, -1);
+                shape.lineTo(1, 1);
+                shape.lineTo(-1, 1);
+                shape.lineTo(-1, -1);
+                const geom = new THREE.ShapeGeometry(shape);
+                geom.center();
+                return geom;
+            };
+
+            const shapes = [];
+            const createShape = () => {
+                const geom = params.shapeType === 'triangle' ? createTriangle() : createSquare();
+                const mat = new THREE.MeshBasicMaterial({
+                    color: new THREE.Color(params.shapeColor),
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0,
+                });
+                const mesh = new THREE.Mesh(geom, mat);
+                const sizePx = Math.random() * (params.shapeSizeMax - params.shapeSizeMin) + params.shapeSizeMin;
+                const scale = pixelToWorld(sizePx);
+                mesh.scale.set(scale, scale, scale);
+                const baseX = Math.random() * (camera.right - camera.left) + camera.left;
+                const baseY = Math.random() * (camera.top - camera.bottom) + camera.bottom;
+                mesh.position.set(baseX, baseY, -1);
+                return {
+                    mesh,
+                    baseX,
+                    baseY,
+                    rotationAxis: randomUnitVector3(),
+                    rotationSpeed: getRandomRotationSpeed(params.shapeRotationSpeed),
+                    mouseInfluenceMultiplier: 0.5 + Math.random(),
+                    scrollSpeedFactorIndividual: 0.5 + Math.random(),
+                    randomOpacity: Math.random() * 0.5 + 0.5,
+                };
+            };
+            const createShapes = () => {
+                shapes.forEach(s => scene.remove(s.mesh));
+                shapes.length = 0;
+                for (let i = 0; i < params.shapeCount; i++) {
+                    const obj = createShape();
+                    shapes.push(obj);
+                    scene.add(obj.mesh);
+                }
+            };
+
+            const setupEventListeners = () => {
+                if (!isTouchDevice) {
+                    window.addEventListener('mousemove', e => {
+                        const r = bgElement.getBoundingClientRect();
+                        mouse.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+                        mouse.y = -((e.clientY - r.top) / r.height) * 2 + 1;
+                        mouseOffset.x = mouse.x * (canvasWidth / 2);
+                        mouseOffset.y = mouse.y * (canvasHeight / 2);
+                    });
+                }
+                window.addEventListener('scroll', () => {
+                    const cur = window.scrollY;
+                    const delta = cur - lastScroll;
+                    scrollVelocity += delta * 0.1 * settings.scrollSpeedFactor;
+                    lastScroll = cur;
+                }, { passive: true });
+            };
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                gradientMaterial.uniforms.uColor1.value.set(params.backgroundColor1);
+                gradientMaterial.uniforms.uColor2.value.set(params.backgroundColor2);
+                gradientMaterial.uniforms.uAngle.value = params.gradientAngle * Math.PI / 180;
+
+                const w = bgElement.clientWidth;
+                const h = bgElement.clientHeight;
+                const widthChanged = w !== canvasWidth;
+                const heightChanged = h !== canvasHeight;
+                if ((isTouchDevice && widthChanged) || (!isTouchDevice && (widthChanged || heightChanged))) {
+                    canvasWidth = w;
+                    canvasHeight = h;
+                    aspect = canvasWidth / canvasHeight;
+                    camera.left = -aspect;
+                    camera.right = aspect;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(canvasWidth, canvasHeight);
+                    createShapes();
+                }
+
+                easedMouseOffset.lerp(mouseOffset, settings.mouseEaseFactor);
+                scrollYOffset += scrollVelocity * settings.scrollMoveFactor * SCROLL_MOVEMENT_SCALE;
+                scrollVelocity *= settings.scrollDamping;
+                if (Math.abs(scrollVelocity) < 0.01) scrollVelocity = 0;
+
+                shapes.forEach(obj => {
+                    const inf = settings.mouseInfluence * obj.mouseInfluenceMultiplier;
+                    const dx = (easedMouseOffset.x / canvasWidth) * inf * MOUSE_MOVEMENT_SCALE;
+                    const dy = (easedMouseOffset.y / canvasHeight) * inf * MOUSE_MOVEMENT_SCALE;
+                    obj.mesh.position.x = obj.baseX + dx;
+                    obj.mesh.position.y = obj.baseY + dy + scrollYOffset * obj.scrollSpeedFactorIndividual;
+                    obj.mesh.material.opacity = Math.min(
+                        obj.mesh.material.opacity + 0.005,
+                        obj.randomOpacity * settings.shapeGlobalOpacity
+                    );
+                    if (params.enableRotation !== false) {
+                        obj.mesh.rotateOnAxis(obj.rotationAxis, obj.rotationSpeed);
+                    }
+                    const halfW = obj.mesh.scale.x;
+                    const halfH = obj.mesh.scale.y;
+                    if (obj.mesh.position.x + halfW < camera.left) obj.baseX += (camera.right - camera.left) + halfW * 2;
+                    if (obj.mesh.position.x - halfW > camera.right) obj.baseX -= (camera.right - camera.left) + halfW * 2;
+                    if (obj.mesh.position.y + halfH < camera.bottom) obj.baseY += (camera.top - camera.bottom) + halfH * 2;
+                    if (obj.mesh.position.y - halfH > camera.top) obj.baseY -= (camera.top - camera.bottom) + halfH * 2;
+                });
+
+                renderer.render(scene, camera);
+            };
+
+            // 초기화
+            createShapes();
+            setupEventListeners();
+            animate();
+
+            //history timeline
+            const items = document.querySelectorAll(".timeline-item");
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("show");
+                        }
+                    });
+                },
+                { threshold: 0.3 }
+            );
+
+            items.forEach((item) => observer.observe(item));
+
+        });
+
+        window.onload = () => {
+            const track = document.getElementById("track");
+            const wrap = track.parentElement;
+            const cards = Array.from(track.children);
+            const prev = document.getElementById("prev");
+            const next = document.getElementById("next");
+            const dotsBox = document.getElementById("dots");
+
+            const isMobile = () => matchMedia("(max-width:767px)").matches;
+
+            cards.forEach((_, i) => {
+                const dot = document.createElement("span");
+                dot.className = "dot";
+                dot.onclick = () => activate(i, true);
+                dotsBox.appendChild(dot);
+            });
+            const dots = Array.from(dotsBox.children);
+
+            let current = 0;
+
+            function center(i) {
+                const card = cards[i];
+                const axis = isMobile() ? "top" : "left";
+                const size = isMobile() ? "clientHeight" : "clientWidth";
+                const start = isMobile() ? card.offsetTop : card.offsetLeft;
+                wrap.scrollTo({
+                    [axis]: start - (wrap[size] / 2 - card[size] / 2),
+                    behavior: "smooth"
+                });
+            }
+
+            function toggleUI(i) {
+                cards.forEach((c, k) => c.toggleAttribute("active", k === i));
+                dots.forEach((d, k) => d.classList.toggle("active", k === i));
+                prev.disabled = i === 0;
+                next.disabled = i === cards.length - 1;
+            }
+
+            function activate(i, scroll) {
+                if (i === current) return;
+                current = i;
+                toggleUI(i);
+                if (scroll) center(i);
+            }
+
+            function go(step) {
+                activate(Math.min(Math.max(current + step, 0), cards.length - 1), true);
+            }
+
+            prev.onclick = () => go(-1);
+            next.onclick = () => go(1);
+
+            addEventListener(
+                "keydown",
+                (e) => {
+                    if (["ArrowRight", "ArrowDown"].includes(e.key)) go(1);
+                    if (["ArrowLeft", "ArrowUp"].includes(e.key)) go(-1);
+                },
+                { passive: true }
+            );
+
+            cards.forEach((card, i) => {
+                card.addEventListener(
+                    "mouseenter",
+                    () => matchMedia("(hover:hover)").matches && activate(i, true)
+                );
+                card.addEventListener("click", () => activate(i, true));
+            });
+
+            let sx = 0,
+                sy = 0;
+            track.addEventListener(
+                "touchstart",
+                (e) => {
+                    sx = e.touches[0].clientX;
+                    sy = e.touches[0].clientY;
+                },
+                { passive: true }
+            );
+
+            track.addEventListener(
+                "touchend",
+                (e) => {
+                    const dx = e.changedTouches[0].clientX - sx;
+                    const dy = e.changedTouches[0].clientY - sy;
+                    if (isMobile() ? Math.abs(dy) > 60 : Math.abs(dx) > 60)
+                        go((isMobile() ? dy : dx) > 0 ? -1 : 1);
+                },
+                { passive: true }
+            );
+            if (window.matchMedia("(max-width:767px)").matches) dotsBox.hidden = true;
+
+            addEventListener("resize", () => center(current));
+
+            toggleUI(0);
+            center(0);
+        };
+
+    </script>
+</head>
+
+<body>
+
+    <div id="wrap">
+        <section class="hero">
+            <div class="row">
+                <div class="text-holder">
+                    <div class="text" style="color: #2B0955">심리학 기반 디자이너, <p>장예경입니다.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="text-holder">
+                    <div class="text" style="color: #901919;">빠르게 배우고, <p>새로운 환경에서도 가치를 만듭니다.</p></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="text-holder" >
+                    <div class="text" style="color: #2B0955;">경험과 통찰로, <p>사용자를 위한 디자인을 완성합니다.</p></div>
+                </div>
+            </div>
+        </section> <!-- .hero end -->
+        <div class="progress"> </div>
+
+        <!--Interactive Three.js Shape Animation Background-->
+        <div class="self-introduce">
+            <h1>적응 · 소통 · 긍정의 &nbsp; <span class="italianno">Designer</span></h1>
+            <div class="profile">
+                <div class="photo">
+                    <img src="img/profile.jpg" alt="프로필사진">
+                </div>
+                <div class="text">
+                    <strong>장예경</strong>
+                    <span class="job">UX/UI 디자이너</span>
+                    <p class="birth">1991 · 12 · 04</p>
+                    <p>010 · 7345 · 8445</p>
+                    <p>bemeykj@gmail.com</p>
+                    <div class="lang">
+                        <span>Lang</span>
+                        <img src="img/icon-Korea.svg" alt="한국">
+                        <img src="img/icon-theUS.svg" alt="미국">
+                    </div><!-- .lang end -->
+                </div><!-- .text end -->
+            </div><!-- .profile end -->
+
+            <div class="profile-bg">
+                <img src="img/bg-profile.svg" alt="배경 패턴">
+            </div><!-- .profile-bg end -->
+
+        </div><!-- .self-introduce end -->
+
+        <div id="background"></div>
+
+        <section class="timeline">
+            <div class="timeline-line"></div>
+            <div class="timeline-item uni">
+                <div class="timeline-icon red-dot main"></div>
+                <div class="timeline-content">
+                    <h3>유타대학교 심리학과</h3>
+                    <span class="date">2019-2022</span>
+                    <p>레지던트 어드바이저<span class="date">2019-2021</span></p>
+                    <p>국제학생 외교<span class="date">2020</span></p>
+                    <p>라이팅센터 튜터<span class="date">2021 Fall</span></p>
+                </div><!-- .timeline-content end -->
+            </div><!-- .timeline-item uni end -->
+
+
+            <div class="timeline-item teacher">
+                <div class="timeline-icon red-dot main"></div>
+                <div class="timeline-content">
+                    <h3>영어강사</h3>
+                    <span class="date">2022-2025</span>
+                    <p>초 · 중 · 고 내신 및 수능 영어</p>
+                </div><!-- .timeline-content end -->
+            </div><!-- .timeline-item teacher -->
+
+            <div class="timeline-item uxui">
+                <div class="timeline-icon red-dot main"></div>
+                <div class="timeline-content">
+                    <div>
+                        <h3>UX/UI 디자인</h3>
+                        <span class="date">2025-</span>
+                        <p>파이썬 평일 오후 과정 수료</p>
+                        <p>웹 퍼블리싱 및 프론트 엔드 과정 수료</p>
+                    </div>
+                    <div class="skills">
+                        <strong>Skills</strong>
+                        <img src="img/icon-adobe-illustrator.png" alt="일러스트레이터">
+                        <img src="img/icon-adobe-photoshop.png" alt="포토샵" class="photoshop">
+                        <img src="img/icon-CSS_image.png" alt="CSS">
+                        <img src="img/icon-FIGMA_image.png" alt="FIGMA">
+                        <img src="img/icon-HTML_image.png" alt="HTML">
+                        <img src="img/icon-JQUERY_image.png" alt="JQUERY">
+                        <img src="img/icon-JS_image.png" alt="JS">
+                        <img src="img/icon-SCSS_image.png" alt="SCSS">
+                    </div><!-- .skills end -->
+                </div><!-- .timeline-content end -->
+            </div><!-- .timeline-item uxui end -->
+        </section><!-- .timeline end -->
+
+
+        <section class="project">
+            <div class="head">
+                <h2 class="italianno">Project</h2>
+
+                <div class="controls">
+                    <button id="prev" class="nav-btn" aria-label="Prev">‹</button>
+                    <button id="next" class="nav-btn" aria-label="Next">›</button>
+                </div>
+            </div>
+
+            <div class="slider">
+                <div class="track" id="track">
+                    <article class="project-card">
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-siksin.png" alt="">
+                            <div>
+                                <h3 class="project-card__title">Siksin</h3>
+                                <p class="project-card__desc">식신. 레스토랑 추천 플랫폼</p>
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card" active>
+                        <!--   <img class="project-card__bg"
+                            src="img/bg-passorder.jpg" alt=""> -->
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-passorder.png" alt="">
+                            <div>
+                                <h3 class="project-card__title">PassOrder</h3>
+                                <p class="project-card__desc">커피 테이크 아웃 주문 앱 플랫폼</p>
+                                <p class="project-card__desc">기여도: 리뉴얼 100%</p>
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <!--      <img class="project-card__bg"
+                            src="img/bg-aladin.jpg" alt=""> -->
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-aladin.png" alt="">
+                            <div>
+                                <h3 class="project-card__title">Aladin</h3>
+                                <p class="project-card__desc">온라인 중고도서 거래 플랫폼</p>
+                                <p class="project-card__desc">기여도: 리뉴얼/코딩 100%</p>
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <!--                <img class="project-card__bg"
+                            src="img/bg-karrot.png" alt=""> -->
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-karrot.svg" alt="">
+                            <div>
+                                <h3 class="project-card__title">Karrot</h3>
+                                <p class="project-card__desc">당근. 앱기반 중고거래 플랫폼</p>
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="project-card">
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-yeogi.svg" alt="">
+                            <div>
+                                <h3 class="project-card__title">Yeogi</h3>
+                                <p class="project-card__desc">여기어때. 관광 서비스 제공 플랫폼</p>
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+
+
+                </div>
+            </div>
+
+            <div class="dots" id="dots"></div>
+        </section><!-- .project end -->
+
+
+        <table>
+            <caption><img src="img/logo.svg" alt="로고"></caption>
+        </table>
+
+        <button id="scrollTopBtn"><img src="img/icon-arrow-up.svg" alt="top버튼"></button>
+    </div><!-- #wrap end -->
+
+</body>
+
+</html>
+
