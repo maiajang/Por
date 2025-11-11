@@ -5,23 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>장예경 | Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geo&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 
-    <!-- 1. Three.js 먼저 로드 (가장 위에) -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 
-    <!-- 2. lil-gui는 완전히 삭제 -->
+
 
     <script>
-        // 3. THREE가 로드되었는지 확인 후 실행
         document.addEventListener("DOMContentLoaded", function () {
             if (typeof THREE === "undefined") {
                 console.error("Three.js 로드 실패!");
                 return;
             }
-
-            // 여기서부터 기존 window.onload 코드 복사
-            // (window.onload 대신 DOMContentLoaded 안에서 실행)
 
             //top버튼
             const scrollBtn = document.getElementById("scrollTopBtn");
@@ -276,12 +274,12 @@
                 renderer.render(scene, camera);
             };
 
-            // 초기화
+
             createShapes();
             setupEventListeners();
             animate();
 
-            //history timeline
+            //timeline
             const items = document.querySelectorAll(".timeline-item");
 
             const observer = new IntersectionObserver(
@@ -299,6 +297,7 @@
 
         });
 
+        //project
         window.onload = () => {
             const track = document.getElementById("track");
             const wrap = track.parentElement;
@@ -336,11 +335,35 @@
                 prev.disabled = i === 0;
                 next.disabled = i === cards.length - 1;
             }
+            function toggleCardContent() {
+                cards.forEach(card => {
+                    const title = card.querySelector("h3");
+                    const descs = card.querySelectorAll(".project-card__desc");
+                    const contrib = card.querySelector(".contribution");
 
+                    const isActive = card.hasAttribute("active");
+
+                    if (title) title.style.display = "";
+                    descs.forEach(d => d.style.display = isActive ? "" : "none");
+                    if (contrib) contrib.style.display = isActive ? "" : "none";
+                });
+            }
+
+            toggleCardContent();
+
+
+            cards.forEach(card => {
+                card.querySelectorAll(".project-card__desc").forEach(d => d.style.display = "none");
+                const contrib = card.querySelector(".contribution");
+                if (contrib) contrib.style.display = "none";
+            });
+
+            toggleCardContent(0);
             function activate(i, scroll) {
                 if (i === current) return;
                 current = i;
                 toggleUI(i);
+                toggleCardContent(i);
                 if (scroll) center(i);
             }
 
@@ -394,6 +417,7 @@
             addEventListener("resize", () => center(current));
 
             toggleUI(0);
+            toggleCardContent(0);
             center(0);
         };
 
@@ -410,14 +434,16 @@
                     </div>
                 </div>
             </div>
-            <div class="row" >
+            <div class="row">
                 <div class="text-holder">
-                    <div class="text" style="color: #901919;">빠르게 배우고, <p>새로운 환경에서도 가치를 만듭니다.</p></div>
+                    <div class="text" style="color: #901919;">빠르게 배우고, <p>새로운 환경에서도 가치를 만듭니다.</p>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <div class="text-holder" >
-                    <div class="text" style="color: #2B0955;">경험과 통찰로, <p>사용자를 위한 디자인을 완성합니다.</p></div>
+                <div class="text-holder">
+                    <div class="text" style="color: #2B0955;">경험과 통찰로, <p>사용자를 위한 디자인을 완성합니다.</p>
+                    </div>
                 </div>
             </div>
         </section> <!-- .hero end -->
@@ -486,14 +512,18 @@
                     </div>
                     <div class="skills">
                         <strong>Skills</strong>
-                        <img src="img/icon-adobe-illustrator.png" alt="일러스트레이터">
-                        <img src="img/icon-adobe-photoshop.png" alt="포토샵" class="photoshop">
-                        <img src="img/icon-CSS_image.png" alt="CSS">
-                        <img src="img/icon-FIGMA_image.png" alt="FIGMA">
-                        <img src="img/icon-HTML_image.png" alt="HTML">
-                        <img src="img/icon-JQUERY_image.png" alt="JQUERY">
-                        <img src="img/icon-JS_image.png" alt="JS">
-                        <img src="img/icon-SCSS_image.png" alt="SCSS">
+                        <div class="skills-line1">
+                            <img src="img/icon-adobe-illustrator.png" alt="일러스트레이터">
+                            <img src="img/icon-adobe-photoshop.png" alt="포토샵" class="photoshop">
+                            <img src="img/icon-CSS_image.png" alt="CSS">
+                            <img src="img/icon-FIGMA_image.png" alt="FIGMA">
+                        </div>
+                        <div class="skills-line2">
+                            <img src="img/icon-HTML_image.png" alt="HTML">
+                            <img src="img/icon-JQUERY_image.png" alt="JQUERY">
+                            <img src="img/icon-JS_image.png" alt="JS">
+                            <img src="img/icon-SCSS_image.png" alt="SCSS">
+                        </div>
                     </div><!-- .skills end -->
                 </div><!-- .timeline-content end -->
             </div><!-- .timeline-item uxui end -->
@@ -513,68 +543,122 @@
             <div class="slider">
                 <div class="track" id="track">
                     <article class="project-card">
+                        <div class="project-card__tags">
+                            <span class="web">웹리뉴얼</span>
+                            <span class="responsive">반응형</span>
+                        </div>
                         <div class="project-card__content">
+
                             <img class="project-card__thumb" src="img/logo-siksin.png" alt="">
                             <div>
+
                                 <h3 class="project-card__title">Siksin</h3>
-                                <p class="project-card__desc">식신. 레스토랑 추천 플랫폼</p>
+                                <p class="project-card__desc">레스토랑 추천 플랫폼</p>
+
+                                <div class="contribution">
+                                    <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
+                                        JavaScript</p>
+                                    <p class="project-card__contribution"></p><strong>사용 도구:</strong> Photoshop · Visual
+                                    Studio Code</p>
+                                    <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 · 퍼블리싱 100%</p>
+                                    <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 홈</p>
+                                </div>
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+
+                    <article class="project-card">
+                        <div class="project-card__tags">
+                            <span class="web">웹리뉴얼</span>
+                        </div>
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-aladin.png" alt="">
+                            <div>
+                                <h3 class="project-card__title">Aladin</h3>
+                                <p class="project-card__desc">온라인 중고도서 거래 플랫폼</p>
+                                <div class="contribution">
+                                    <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
+                                        JavaScript</p>
+                                    <p class="project-card__contribution"></p><strong>사용 도구:</strong> Photoshop · Visual
+                                    Studio Code</p>
+                                    <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 · 퍼블리싱 100%</p>
+                                    <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 홈</p>
+                                </div><!-- .contribution end -->
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+
+                    <article class="project-card">
+                        <div class="project-card__tags">
+                            <span class="web">웹리뉴얼</span>
+                            <span class="responsive">반응형</span>
+                        </div>
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-yeogi.svg" alt="">
+                            <div>
+                                <h3 class="project-card__title">Yeogi</h3>
+                                <p class="project-card__desc">관광 서비스 제공 플랫폼</p>
+                                <div class="contribution">
+                                    <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
+                                        JavaScript · jQuery</p>
+                                    <p class="project-card__contribution"></p><strong>사용 도구:</strong> Photoshop · Visual
+                                    Studio Code</p>
+                                    <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 · 퍼블리싱 100%</p>
+                                    <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 홈</p>
+                                </div><!-- .contribution end -->
+                                <button class="project-card__btn">Details</button>
+                            </div>
+                        </div>
+                    </article>
+
+
+                    <article class="project-card">
+                        <div class="project-card__tags">
+                            <span class="app">앱리뉴얼</span>
+                        </div>
+                        <div class="project-card__content">
+                            <img class="project-card__thumb" src="img/logo-karrot.svg" alt="">
+                            <div>
+                                <h3 class="project-card__title">Karrot</h3>
+                                <p class="project-card__desc">앱기반 중고거래 플랫폼</p>
+                                <div class="contribution">
+                                    <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
+                                        JavaScript</p>
+                                    <p class="project-card__contribution"></p><strong>사용 도구:</strong> Photoshop · Visual
+                                    Studio Code</p>
+                                    <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 · 퍼블리싱 100%</p>
+                                    <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 · 서브 페이지</p>
+                                </div><!-- .contribution end -->
+
                                 <button class="project-card__btn">Details</button>
                             </div>
                         </div>
                     </article>
 
                     <article class="project-card" active>
-                        <!--   <img class="project-card__bg"
-                            src="img/bg-passorder.jpg" alt=""> -->
+                        <div class="project-card__tags">
+                            <span class="app">앱리뉴얼</span>
+                        </div>
                         <div class="project-card__content">
                             <img class="project-card__thumb" src="img/logo-passorder.png" alt="">
-                            <div>
+                            <div class="project-card__text">
                                 <h3 class="project-card__title">PassOrder</h3>
                                 <p class="project-card__desc">커피 테이크 아웃 주문 앱 플랫폼</p>
-                                <p class="project-card__desc">기여도: 리뉴얼 100%</p>
+                                <div class="contribution">
+
+                                    <p class="project-card__contribution"></p><strong>사용 도구:</strong> Photoshop · Visual
+                                    Studio Code</p>
+                                    <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 100%</p>
+                                    <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 · 서브 페이지</p>
+                                </div><!-- .contribution end -->
                                 <button class="project-card__btn">Details</button>
                             </div>
                         </div>
                     </article>
-
-                    <article class="project-card">
-                        <!--      <img class="project-card__bg"
-                            src="img/bg-aladin.jpg" alt=""> -->
-                        <div class="project-card__content">
-                            <img class="project-card__thumb" src="img/logo-aladin.png" alt="">
-                            <div>
-                                <h3 class="project-card__title">Aladin</h3>
-                                <p class="project-card__desc">온라인 중고도서 거래 플랫폼</p>
-                                <p class="project-card__desc">기여도: 리뉴얼/코딩 100%</p>
-                                <button class="project-card__btn">Details</button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="project-card">
-                        <!--                <img class="project-card__bg"
-                            src="img/bg-karrot.png" alt=""> -->
-                        <div class="project-card__content">
-                            <img class="project-card__thumb" src="img/logo-karrot.svg" alt="">
-                            <div>
-                                <h3 class="project-card__title">Karrot</h3>
-                                <p class="project-card__desc">당근. 앱기반 중고거래 플랫폼</p>
-                                <button class="project-card__btn">Details</button>
-                            </div>
-                        </div>
-                    </article>
-
-                    <article class="project-card">
-                        <div class="project-card__content">
-                            <img class="project-card__thumb" src="img/logo-yeogi.svg" alt="">
-                            <div>
-                                <h3 class="project-card__title">Yeogi</h3>
-                                <p class="project-card__desc">여기어때. 관광 서비스 제공 플랫폼</p>
-                                <button class="project-card__btn">Details</button>
-                            </div>
-                        </div>
-                    </article>
-
 
 
                 </div>
@@ -584,14 +668,19 @@
         </section><!-- .project end -->
 
 
+
+
+
+
+        <!-- 헤더 -->
         <table>
             <caption><img src="img/logo.svg" alt="로고"></caption>
         </table>
 
+        <!-- 탑버튼 -->
         <button id="scrollTopBtn"><img src="img/icon-arrow-up.svg" alt="top버튼"></button>
     </div><!-- #wrap end -->
 
 </body>
 
 </html>
-
