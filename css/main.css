@@ -40,7 +40,7 @@
 
 html,
 body {
-
+    scroll-behavior: smooth;
     background: transparent;
     overflow-X: hidden;
 }
@@ -78,8 +78,13 @@ canvas {
 
 
 caption {
-
-    text-align: left;
+    max-width: 1200px;
+    width: calc(100% -40px);
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40vw;
     left: 40px;
     position: fixed;
     top: 24px;
@@ -88,6 +93,22 @@ caption {
 
 caption img {
     width: 100%;
+}
+
+caption ul {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+}
+
+caption ul li {
+    padding: 1vw;
+    white-space: nowrap;
+}
+
+caption ul li a {
+    display: block;
+
 }
 
 
@@ -146,7 +167,7 @@ h1 {
     margin-top: 0;
     margin-bottom: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 5vw;
+    font-size: 7vw;
     font-weight: bold;
     display: flex;
     flex-direction: column;
@@ -159,6 +180,7 @@ h1 {
 /* 프로필 설정 */
 
 .self-introduce {
+
     position: relative;
     height: 1040px;
 
@@ -506,7 +528,7 @@ h1 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.7rem;
+    gap: 1rem;
     padding-left: 0;
     background: linear-gradient(transparent 10%, rgba(255, 255, 255, 0.5) 60%);
     z-index: 2;
@@ -557,7 +579,7 @@ h1 {
 }
 
 .project .project-card[active] .project-card__contribution {
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 
 }
 
@@ -567,6 +589,16 @@ h1 {
     transform: none;
     font-size: 2.4rem;
     margin-bottom: 12px;
+}
+
+.project .project-card__title span {
+    display: none;
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.project .project-card[active] .project-card__title span {
+    display: inline !important;
 }
 
 .project .project-card[active] .project-card__thumb,
@@ -590,24 +622,31 @@ h1 {
     margin: 4px 0 20px;
 }
 
+.project .project-card__content .btn {
+    display: flex;
+    gap: 1vw;
+}
+
 .project .project-card__btn {
-    padding: 1.2rem 5.3rem;
+    width: 120px;
+    padding: 12px 0px;
     border: none;
     border-radius: 9999px;
-    background: var(--accent);
-    color: #fff;
+    color: #222;
     font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.5s;
-    margin-top: 30px;
+    border: 1px solid #990909 !important;
+    margin-top: 18px;
 }
 
 .project .project-card__btn:hover {
     background: #990909;
-    border: 1px solid rgba(255, 255, 255, 0.637);
     transform: scale(1.2);
+    color: #fff;
 }
+
 
 .project .dots {
     display: flex;
@@ -757,6 +796,7 @@ h1 {
         gap: 1rem;
     }
 
+
     .project .project-card__title {
         writing-mode: horizontal-tb;
         transform: none;
@@ -823,6 +863,9 @@ h1 {
         transform: none;
     }
 
+    .gnb {
+        display: none;
+    }
 }
 
 @media screen and (max-width:400px) {
@@ -834,12 +877,12 @@ h1 {
         left: 0;
     }
 
-    h1 {
-        font-size: 10vw;
+    .hero .text {
+        font-size: 9vw;
     }
 
-    .italianno {
-        font-size: 30vw;
+    .text-holder p {
+        font-size: 6vw;
     }
 }
 
@@ -909,16 +952,16 @@ h1 {
 @media (max-width: 1240px) {
 
     caption {
-        font-size: 24px;
         left: 20px;
         top: 16px;
+        gap: 30vw;
     }
 
 
 
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 1020px) {
 
     h1 {
         font-size: 2rem;
@@ -927,6 +970,11 @@ h1 {
     .profile {
         width: 40%;
         justify-content: center;
+    }
+ caption {
+        left: 20px;
+        top: 16px;
+        gap: 16vw;
     }
 
 
@@ -990,4 +1038,5 @@ h1 {
     h1 span {
         font-size: 4rem;
     }
+
 }

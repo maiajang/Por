@@ -60,7 +60,7 @@
                 backgroundColor2: '#d9d9d9',
                 gradientAngle: 30,
                 shapeType: 'triangle',
-                shapeColor: '#99090A',
+                shapeColor: '#99090a',
                 shapeSizeMin: 1.5,
                 shapeSizeMax: 8,
                 shapeCount: !isTouchDevice ? 100 : 50,
@@ -427,7 +427,7 @@
 <body>
 
     <div id="wrap">
-        <section class="hero">
+        <section class="hero" id="hero">
             <div class="row">
                 <div class="text-holder">
                     <div class="text" style="color: #2B0955">심리학 기반 디자이너, <p>장예경입니다.</p>
@@ -450,7 +450,7 @@
         <div class="progress"> </div>
 
         <!--Interactive Three.js Shape Animation Background-->
-        <div class="self-introduce">
+        <div class="self-introduce" id="profile">
             <h1>적응 · 소통 · 긍정의 &nbsp; <span class="italianno">Designer</span></h1>
             <div class="profile">
                 <div class="photo">
@@ -467,6 +467,7 @@
                         <img src="img/icon-Korea.svg" alt="한국">
                         <img src="img/icon-theUS.svg" alt="미국">
                     </div><!-- .lang end -->
+
                 </div><!-- .text end -->
             </div><!-- .profile end -->
 
@@ -528,7 +529,7 @@
         </section><!-- .timeline end -->
 
 
-        <section class="project">
+        <section class="project" id="project">
             <div class="head">
                 <h2 class="italianno">Project</h2>
 
@@ -548,8 +549,8 @@
                         <div class="project-card__content">
                             <img class="project-card__thumb" src="img/logo-siksin.png" alt="">
                             <div class="text">
-                                <h3 class="project-card__title">Siksin</h3>
-                                <p class="project-card__desc">레스토랑 추천 플랫폼</p>
+                                <h3 class="project-card__title">Siksin
+                                <span class="project-card__desc">레스토랑 추천 플랫폼</span></h3>
 
                                 <div class="contribution">
                                     <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
@@ -559,10 +560,14 @@
                                     <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 · 퍼블리싱 100%
                                     </p>
                                     <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 홈</p>
-                                </div>
+                                </div><!-- .contribution end -->
 
-                                <button class="project-card__btn"
-                                    onclick="window.open('https://maiajang.github.io/siksin', 'window_name', 'width=430, height=500, location=no, status=no, scrollbars=yes');">Github</button>
+                                <div class="btn">
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://maiajang.github.io/siksin', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Github</button>
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Process</button>
+                                </div><!-- .btn end -->
                             </div>
                         </div>
                     </article>
@@ -575,8 +580,9 @@
                         <div class="project-card__content">
                             <img class="project-card__thumb" src="img/logo-aladin.png" alt="">
                             <div class="text">
-                                <h3 class="project-card__title">Aladin</h3>
-                                <p class="project-card__desc">온라인 중고도서 거래 플랫폼</p>
+                                <h3 class="project-card__title">Aladin
+                                    <span class="project-card__desc">온라인 중고도서 거래 플랫폼</span>
+                                </h3>
                                 <div class="contribution">
                                     <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
                                         JavaScript</p>
@@ -586,8 +592,12 @@
                                     </p>
                                     <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 홈</p>
                                 </div><!-- .contribution end -->
-                                <button class="project-card__btn"
-                                    onclick="window.open('https://maiajang.github.io/Aladin', 'window_name', 'width=430, height=500, location=no, status=no, scrollbars=yes');">Github</button>
+                                <div class="btn">
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://maiajang.github.io/Aladin', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Github</button>
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Process</button>
+                                </div><!-- .btn end -->
 
                             </div>
                         </div>
@@ -602,8 +612,9 @@
                         <div class="project-card__content">
                             <img class="project-card__thumb" src="img/logo-yeogi.svg" alt="">
                             <div class="text">
-                                <h3 class="project-card__title">Yeogi</h3>
-                                <p class="project-card__desc">관광 서비스 제공 플랫폼</p>
+                                <h3 class="project-card__title">Yeogi
+                                    <span class="project-card__desc">관광 서비스 제공 플랫폼</span>
+                                </h3>
                                 <div class="contribution">
                                     <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
                                         JavaScript · jQuery</p>
@@ -613,8 +624,12 @@
                                     </p>
                                     <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 홈</p>
                                 </div><!-- .contribution end -->
-                                <button class="project-card__btn"
-                                    onclick="window.open('https://maiajang.github.io/yeogi', 'window_name', 'width=430, height=500, location=no, status=no, scrollbars=yes');">Github</button>
+                                <div class="btn">
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://maiajang.github.io/yeogi', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Github</button>
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Process</button>
+                                </div><!-- .btn end -->
 
                             </div>
                         </div>
@@ -628,8 +643,9 @@
                         <div class="project-card__content">
                             <img class="project-card__thumb" src="img/logo-karrot.svg" alt="">
                             <div class="text">
-                                <h3 class="project-card__title">Karrot</h3>
-                                <p class="project-card__desc">앱기반 중고거래 플랫폼</p>
+                                <h3 class="project-card__title">Karrot
+                                    <span class="project-card__desc">앱기반 중고거래 플랫폼</span>
+                                </h3>
                                 <div class="contribution">
                                     <p class="project-card__contribution"><strong>사용 기술:</strong> HTML · CSS ·
                                         JavaScript</p>
@@ -640,8 +656,12 @@
                                     <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 · 서브 페이지</p>
                                 </div><!-- .contribution end -->
 
-                                <button class="project-card__btn"
-                                    onclick="window.open('https://maiajang.github.io/Karrot', 'window_name', 'width=430, height=500, location=no, status=no, scrollbars=yes');">Github</button>
+                                <div class="btn">
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://maiajang.github.io/Karrot', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Github</button>
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Process</button>
+                                </div><!-- .btn end -->
 
                             </div>
                         </div>
@@ -654,8 +674,8 @@
                         <div class="project-card__content">
                             <img class="project-card__thumb" src="img/logo-passorder.png" alt="">
                             <div class="text">
-                                <h3 class="project-card__title">PassOrder</h3>
-                                <p class="project-card__desc">커피 테이크 아웃 주문 앱 플랫폼</p>
+                                <h3 class="project-card__title">PassOrder
+                                <span class="project-card__desc">카페 주문 앱 플랫폼</span></h3>
                                 <div class="contribution">
 
                                     <p class="project-card__contribution"></p><strong>사용 도구:</strong> Photoshop · Visual
@@ -663,7 +683,12 @@
                                     <p class="project-card__contribution"></p><strong>기여도:</strong> 기획 · 디자인 100%</p>
                                     <p class="project-card__contribution"></p><strong>제작 범위:</strong> 메인 · 서브 페이지</p>
                                 </div><!-- .contribution end -->
-                                <button class="project-card__btn">Details</button>
+                                <div class="btn">
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Figma</button>
+                                    <button class="project-card__btn"
+                                        onclick="window.open('https://', 'window_name', 'width=1200, height=960, location=no, status=no, scrollbars=yes');">Process</button>
+                                </div><!-- .btn end -->
                             </div>
                         </div>
                     </article>
@@ -682,7 +707,16 @@
 
         <!-- 헤더 -->
         <table>
-            <caption><img src="img/logo.svg" alt="로고"></caption>
+            <caption><img src="img/logo.svg" alt="로고">
+                <ul class="gnb">
+                    <li><a href="#hero">Intro</a></li>
+                    <li><a href="#profile">Profile</a></li>
+                    <li><a href="#project">Project</a></li>
+                    <li><a href="#">Graphic Design</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </caption>
+
         </table>
 
         <!-- 탑버튼 -->
