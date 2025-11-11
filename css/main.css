@@ -253,7 +253,7 @@ h1 {
 /* 타임라인 */
 .timeline {
     max-width: 800px;
-    height: 980px;
+    height: 920px;
     margin: 0 auto;
     position: relative;
 
@@ -405,14 +405,7 @@ h1 {
     --accent: #990909;
 }
 
-.project {
 
-    position: absolute;
-    top: 4166px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: -1;
-}
 
 .project .head {
     max-width: 1400px;
