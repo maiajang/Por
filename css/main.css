@@ -78,13 +78,11 @@ canvas {
 
 
 caption {
-    max-width: 1200px;
-    width: calc(100% -40px);
     height: 100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 40vw;
+    gap: 30vw;
     left: 40px;
     position: fixed;
     top: 24px;
@@ -869,6 +867,14 @@ h1 {
 }
 
 @media screen and (max-width:400px) {
+    h1 {
+        font-size: 10vw;
+    }
+
+    .italianno {
+        font-size: 30vw;
+    }
+
     .project .controls {
         display: none;
     }
@@ -883,6 +889,10 @@ h1 {
 
     .text-holder p {
         font-size: 6vw;
+    }
+
+    .timeline-item {
+        top: -300px;
     }
 }
 
@@ -952,9 +962,7 @@ h1 {
 @media (max-width: 1240px) {
 
     caption {
-        left: 20px;
-        top: 16px;
-        gap: 30vw;
+        gap: 20vw;
     }
 
 
@@ -962,24 +970,31 @@ h1 {
 }
 
 @media screen and (max-width: 1020px) {
-
+    
     h1 {
         font-size: 2rem;
     }
-
+    
     .profile {
         width: 40%;
         justify-content: center;
     }
- caption {
+    
+    caption {
         left: 20px;
         top: 16px;
-        gap: 16vw;
+        gap: 10vw;
     }
-
-
+    
+    
 }
 
+@media screen and (max-width: 900px) {
+    caption {
+        gap: 7vw;
+        display: block;
+    }
+}
 
 
 @media screen and (max-width: 700px) {
@@ -992,7 +1007,7 @@ h1 {
     }
 
     caption img {
-        width: 45%;
+        height: 100%;
     }
 
     h1 {
