@@ -134,16 +134,23 @@ h1 {
     white-space: nowrap;
 }
 
+.section-title {
+      display: flex;
+    align-items: baseline;
+    gap: 40px;
+    color: #99090A;
+    margin-top: 100px;
+    margin-bottom: 40px;
+
+
+}
 
 .italianno {
     color: #99090A;
-    display: inline-block;
     font-family: 'Italianno';
     font-size: 8rem;
     font-weight: 700;
-    margin-bottom: 40px;
 }
-
 /* hero */
 .row {
     background-color: #0000;
@@ -164,7 +171,7 @@ h1 {
 
 .text-holder p {
     font-weight: 400;
-    font-size: 4vw;
+    font-size: 3vw;
 }
 
 .hero .text {
@@ -176,7 +183,7 @@ h1 {
     margin-top: 0;
     margin-bottom: 0;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 7vw;
+    font-size: 5vw;
     font-weight: bold;
     display: flex;
     flex-direction: column;
@@ -313,12 +320,14 @@ h1 {
     opacity: 1;
     transform: translateY(0);
 }
+
 .timeline-item .icon-books {
     margin-bottom: 12px;
     width: 42px;
-    
+
 }
-.timeline-item .icon-books img{
+
+.timeline-item .icon-books img {
     width: 100%;
 }
 
@@ -347,6 +356,8 @@ h1 {
 }
 
 .timeline-content h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
     color: #000000;
 
 }
@@ -596,7 +607,7 @@ h1 {
     padding: 1.2rem 2rem;
 }
 
-.project .project-card[active] .project-card__contribution {
+.project-card__contribution {
     margin-bottom: 8px;
 
 }
@@ -708,6 +719,8 @@ h1 {
 
 .project-card__tags span.web {
     background-color: #355cfa0e;
+    margin-right: 6px;
+
 }
 
 .project-card__tags span.app {
@@ -715,9 +728,6 @@ h1 {
     background-color: #9909090a;
 }
 
-.project-card__tags span.responsive {
-    margin-left: 6px;
-}
 
 @media (max-width: 767px) {
     :root {
@@ -914,23 +924,21 @@ h1 {
     }
 }
 
-.imitation .img {
+.imitation .list .item {
     display: flex;
+    align-items: center;
 }
 
-.imitation .img .pc {
-    width: 500px;
-    object-fit: cover;
+.imitation .list .item h3 {
+    font-size: 40px;
+    font-weight: 700;
 }
 
-.imitation .img .mobile {
-    width: 300px;
-    object-fit: contain;
+.imitation p.project-card__contribution {
+    color: #58585860;
 }
 
-.wrap {
-    margin: 100px auto;
-}
+
 
 .thumbnail {
     background: #fff;
@@ -940,6 +948,7 @@ h1 {
     border: 2px solid #f7f7f7;
     padding: 20px;
     overflow: hidden;
+    border-radius: 30px;
 }
 
 .thumbnail img {
@@ -947,6 +956,7 @@ h1 {
     -moz-transition: transform 7s;
     transition: transform 5s;
     width: 100%;
+    object-fit: cover;
 }
 
 .thumbnail:hover img {
