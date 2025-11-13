@@ -568,10 +568,39 @@
 
                 progressBarAnimation();
             });
+            // contact
+            const swiftUpElements = document.querySelectorAll('.swift-up-text');
 
+            // 단어별 span/i로 감싸는 초기 세팅
+            swiftUpElements.forEach(elem => {
+                const words = elem.textContent.split(' ');
+                elem.innerHTML = '';
 
+                words.forEach((word, index) => {
+                    words[index] = `<span><i>${word}</i></span>`;
+                });
+
+                elem.innerHTML = words.join(' ');
+            });
+
+            // ✅ Intersection Observer (보일 때만 애니메이션 실행)
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const spans = entry.target.querySelectorAll('span > i');
+                        spans.forEach((node, index) => {
+                            node.style.animationDelay = `${index * 0.1}s`;
+                            node.classList.add('visible'); // 보일 때 애니메이션 시작
+                        });
+
+                        observer.unobserve(entry.target); // 한 번만 실행되게
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            swiftUpElements.forEach(el => observer.observe(el));
         }
-        // Event Listeners Ends
+
     </script>
 </head>
 
@@ -581,7 +610,8 @@
         <section class="hero" id="hero">
             <div class="row">
                 <div class="text-holder">
-                    <div class="text" style="color: #4B2E83;">배우며 성장하는 <br> 웹 퍼블리셔, <p>장예경입니다.</p>
+                    <div class="text" style="color: #4B2E83;">배우며 성장하는<p> 웹 퍼블리셔,
+                        <p>장예경입니다.</p>
                     </div>
                 </div>
             </div>
@@ -620,7 +650,8 @@
                     </div><!-- .lang end -->
                 </div><!-- .text end -->
                 <div class="btn resume">
-                    <button>이력서 다운 받기</button>
+                    <a href="pdf/장예경_입사지원서.pdf" download>이력서 다운 받기</a>
+                    <img src="img/icon-download.svg" alt="">
                 </div><!-- .btn resume end -->
             </div><!-- .profile end -->
             <div class="profile-bg">
@@ -918,7 +949,7 @@
         </div><!-- .list end -->
     </section><!-- .imitation -->
 
-    <section class="design slider-container">
+    <section class="design slider-container" id="design">
         <div class="section-title">
             <h2 class="italianno">Design</h2>
             <svg class="section-line" viewBox="0 0 1200 100" preserveAspectRatio="none"
@@ -958,12 +989,16 @@
         </div>
     </section>
 
+    <section class="contact" id="contact">
+        <div class="container">
+            <h5 class="swift-up-text">환경이 바뀌어도, </h5>
+            <h5 class="swift-up-text">방향은 같습니다. </h5>
+            <br>
+            <h5 class="swift-up-text">계속 배우고, </h5>
+            <h5 class="swift-up-text">더 나은 코드를 향해 나아가겠습니다.</h5>
+        </div>
 
-    <section class="contact">
-        <strong></strong>
     </section>
-
-
 
 
 
@@ -975,7 +1010,7 @@
                 <li><a href="#profile">Profile</a></li>
                 <li><a href="#project">Project</a></li>
                 <li><a href="#design">Design</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </caption>
 
@@ -986,5 +1021,7 @@
     </div><!-- #wrap end -->
 
 </body>
+
+
 
 </html>
