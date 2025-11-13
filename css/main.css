@@ -133,11 +133,8 @@ h1 {
 }
 
 .section-title {
-    display: flex;
-    align-items: baseline;
-    gap: 40px;
     color: #99090A;
-    margin-top: 100px;
+    text-align: center;
     margin-bottom: 40px;
 
 
@@ -146,9 +143,10 @@ h1 {
 .italianno {
     color: #99090A;
     font-family: 'Italianno';
-    font-size: 8rem;
+    font-size: 9vw;
     font-weight: 700;
 }
+
 
 .project {
     position: relative;
@@ -187,6 +185,7 @@ h1 {
 }
 
 .hero .text {
+    width: 100%;
     transform: translateZ(0);
     color: #fff;
     white-space: nowrap;
@@ -294,7 +293,6 @@ h1 {
 /* 타임라인 */
 .timeline {
     max-width: 800px;
-    height: 920px;
     position: relative;
 
 }
@@ -320,13 +318,11 @@ h1 {
     opacity: 0;
     transform: translateY(40px);
     transition: all 0.6s ease-out;
-    top: -200px;
-    left: 0px;
+    top: -187px;
+    left: 0;
 }
 
-.timeline-item.uxui {
-    left: -40px;
-}
+.timeline-item.uxui {}
 
 .timeline-item.show {
     opacity: 1;
@@ -460,35 +456,20 @@ h1 {
 
 
 
-.project .head {
-    max-width: 1400px;
-    margin: auto;
-    padding: 70px 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 2rem;
-}
-
-.project .head h2 {
-    font-size: 6rem;
-}
-
-
-
 .project .nav-btn {
     width: 2.5rem;
     height: 2.5rem;
     border: none;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
     font-size: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: 0.3s;
+    margin-bottom: 16px;
 }
 
 .project .nav-btn:hover {
@@ -501,7 +482,7 @@ h1 {
 }
 
 .project .slider {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: auto;
     overflow: hidden;
 }
@@ -509,7 +490,9 @@ h1 {
 .project .controls {
     display: flex;
     flex-direction: row;
+    justify-content: flex-end;
     gap: 0.5rem;
+    margin-right: 16px;
 }
 
 .project .track {
@@ -936,9 +919,14 @@ h1 {
     }
 }
 
-.imitation .list .item {
+.imitation .list {
+    width: 100%;
     display: flex;
-    align-items: center;
+    gap: 20px;
+}
+
+.imitation .list .item {
+    width: 45%;
 }
 
 .imitation .list .item h3 {
@@ -950,9 +938,7 @@ h1 {
     color: #58585860;
 }
 
-.thumb-section {
-    margin: 100px;
-}
+.thumb-section {}
 
 .thumbnail {
     max-width: 600px;
@@ -995,7 +981,6 @@ h1 {
     position: relative;
     display: flex;
     flex-direction: column;
-    width: 95%;
     margin: 0 auto;
     padding: 1rem;
 }
