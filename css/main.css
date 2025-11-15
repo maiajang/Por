@@ -137,6 +137,7 @@ h1 {
     padding: 40px 0;
     max-width: 800px;
     white-space: nowrap;
+      scroll-margin-top: 80px;
 }
 
 
@@ -173,6 +174,10 @@ h1 {
 
 
 /* hero */
+
+.hero {
+scroll-margin-top: 200px;
+}
 .row {
     background-color: #0000;
     background-position: 0 0;
