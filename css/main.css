@@ -149,12 +149,12 @@ h1 {
 }
 
 .italianno {
+    padding: 0 16px;
     display: block;
     color: #99090A;
     font-family: 'Italianno';
     font-size: 9vw;
     font-weight: 700;
-    min-width: 480px;
 }
 
 
