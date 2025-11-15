@@ -158,7 +158,7 @@ h1 {
 
 
 .project {
-    height: 100vh;
+  
     position: relative;
     background-position: center;
     box-sizing: border-box;
@@ -1211,7 +1211,7 @@ i.visible {
 @media screen and (max-width: 1000px) {
     .container {
         width: auto;
-        margin: 0 10%;
+
     }
 
     :root {
